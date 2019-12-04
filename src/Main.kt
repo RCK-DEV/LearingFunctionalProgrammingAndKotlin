@@ -43,9 +43,8 @@ fun <T> propertiesToList(propertyName: String, transformFunction: (String) -> T,
     return result;
 }
 
-fun propertiesToIntList(propertyName: String, properties: Result<Properties>): Result<List<Int>> {
-    return propertiesToList(propertyName, String::toInt, properties)
-}
+fun propertiesToIntList(propertyName: String, properties: Result<Properties>): Result<List<Int>> =
+        propertiesToList(propertyName, String::toInt, properties)
 
 fun main() {
     // 1
