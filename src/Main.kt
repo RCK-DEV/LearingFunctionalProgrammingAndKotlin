@@ -23,28 +23,28 @@ fun fileToProperties(fileName: String): Result<Properties> {
     }
 }
 
-fun propertiesToString(name: String, properties: Result<Properties>): Result<String> {
+fun propertiesToString(propertyName: String, properties: Result<Properties>): Result<String> {
     val result = properties.flatMap {
         Result.of {
-            it.getProperty(name)
-        }.mapFailure("Property '$name' not found")
+            it.getProperty(propertyName)
+        }.mapFailure("Property '$propertyName' not found")
     }
     return result
 }
 
-fun <T> propertiesToList(name: String, f: (String) -> T, properties: Result<Properties>): Result<List<T>> {
-    val result: Result<List<T>> = propertiesToString(name, properties).flatMap {
+fun <T> propertiesToList(propertyName: String, transformFunction: (String) -> T, properties: Result<Properties>): Result<List<T>> {
+    val result: Result<List<T>> = propertiesToString(propertyName, properties).flatMap {
         try {
-            Result(it.split(",").map(f))
+            Result(it.split(",").map(transformFunction))
         } catch (e: Exception) {
-            Result.failure<List<T>>("Invalid value while parsing property $name:$it")
+            Result.failure<List<T>>("Invalid value while parsing property $propertyName:$it")
         }
     }
     return result;
 }
 
-fun propertiesToIntList(name: String, properties: Result<Properties>): Result<List<Int>> {
-    return propertiesToList(name, String::toInt, properties)
+fun propertiesToIntList(propertyName: String, properties: Result<Properties>): Result<List<Int>> {
+    return propertiesToList(propertyName, String::toInt, properties)
 }
 
 fun main() {
